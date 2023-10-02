@@ -1,3 +1,4 @@
-beautifulsoup4==4.11.1
+beautifulsoup4~=4.12.2
 forex_python==1.8
 Requests==2.31.0
+countryinfo~=0.1.2

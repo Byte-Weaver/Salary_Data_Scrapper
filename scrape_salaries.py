@@ -4,7 +4,18 @@ import csv
 import re
 import json
 
-from forex_python.converter import CurrencyRates
+from countryinfo import CountryInfo
+
+
+# Function to get the continent of each country
+def get_continent_for_country(country_name):
+    try:
+        country_info = CountryInfo(country_name)
+        continent = country_info.region()
+        return continent
+    except Exception as e:
+        print(f"Error: {e}")
+        return None
 
 
 # Function to fetch exchange rate data and store it locally
@@ -204,10 +215,12 @@ def log_country_data_to_csv(country_data, exchange_rate_data):
         for idx, country in enumerate(country_data, start=1):
             country_url = country['country_link']
             salary_info = scrape_country_salary_info(country_url, exchange_rate_data)
+            continent = get_continent_for_country(country['country_name'])
 
             if salary_info:
                 salary_data = {
                     'country_name': country['country_name'],
+                    'continent_name': continent,
                     'wage_span': salary_info['wage_span'],
                     'median_salary': salary_info['median_salary'],
                     'average_salary': salary_info['average_salary'],
@@ -224,7 +237,7 @@ def log_country_data_to_csv(country_data, exchange_rate_data):
 
         # Write data to the CSV file
         with open(csv_filename, mode='w', newline='') as csv_file:
-            fieldnames = ['country_name', 'wage_span', 'median_salary', 'average_salary', 'lowest_salary',
+            fieldnames = ['country_name', 'continent_name', 'wage_span', 'median_salary', 'average_salary', 'lowest_salary',
                           'highest_salary']
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
