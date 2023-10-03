@@ -6,15 +6,48 @@ import json
 
 from countryinfo import CountryInfo
 
+# Mapping dictionary for failed countries by api
+country_to_continent = {
+    'Aland Islands': 'Europe',
+    'Andorra': 'Europe',
+    'Bahamas': 'North America',
+    'Congo': 'Africa',
+    'Congo Democratic Republic': 'Africa',
+    'Cote Divoire': 'Africa',
+    'Gambia': 'Africa',
+    'Korea (North)': 'Asia',
+    'Korea (South)': 'Asia',
+    'Macao': 'Asia',
+    'Macedonia': 'Europe',
+    'Micronesia': 'Oceania',
+    'Montenegro': 'Europe',
+    'Myanmar': 'Asia',
+    'Netherlands Antilles': 'North America',
+    'Palestine': 'Asia',
+    'Saint Martin': 'North America',
+    'Sao Tome and Principe': 'Africa',
+    'Turks and Caicos Islands': 'North America',
+    'Virgin Islands (British)': 'North America',
+    'Virgin Islands (US)': 'North America'
+}
 
-# Function to get the continent of each country
+
+# Function to get the continent for a given country name
 def get_continent_for_country(country_name):
     try:
         country_info = CountryInfo(country_name)
         continent = country_info.region()
+        if continent == 'Americas':
+            # For Americas, further differentiate between North America and South America
+            subregion = country_info.subregion()
+            if subregion:
+                return subregion
         return continent
     except Exception as e:
-        print(f"Error: {e}")
+        if country_name in country_to_continent.keys():
+            return country_to_continent[country_name]
+        else:
+            print(f"Error: {e}")
         return None
 
 
@@ -237,7 +270,8 @@ def log_country_data_to_csv(country_data, exchange_rate_data):
 
         # Write data to the CSV file
         with open(csv_filename, mode='w', newline='') as csv_file:
-            fieldnames = ['country_name', 'continent_name', 'wage_span', 'median_salary', 'average_salary', 'lowest_salary',
+            fieldnames = ['country_name', 'continent_name', 'wage_span', 'median_salary', 'average_salary',
+                          'lowest_salary',
                           'highest_salary']
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 

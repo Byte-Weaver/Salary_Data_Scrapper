@@ -1,4 +1,4 @@
-from scrape_salaries import log_country_data_to_csv, scrape_country_names_and_links, load_exchange_rate_data
+from scrape_functions import log_country_data_to_csv, scrape_country_names_and_links, load_exchange_rate_data
 
 if __name__ == "__main__":
     # Load exchange rate data from a local file or fetch it if not available
